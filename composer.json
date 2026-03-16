@@ -1,24 +1,24 @@
 {
-    "name": "select/select-components",
-    "description": "Laravel Blade components for remote, offline and multi selects.",
-    "type": "library",
-    "license": "MIT",
-    "require": {
-        "php": "^8.2",
-        "illuminate/support": "^12.0",
-        "illuminate/view": "^12.0",
-        "livewire/livewire": "^4.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "SelectComponents\\": "src/"
-        }
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "SelectComponents\\SelectComponentsServiceProvider"
-            ]
-        }
+  "name": "akhmads/select-components",
+  "description": "Laravel Blade components for remote, offline and multi selects.",
+  "type": "library",
+  "license": "MIT",
+  "require": {
+    "php": "^8.2",
+    "illuminate/support": "^12.0",
+    "illuminate/view": "^12.0",
+    "livewire/livewire": "^4.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "SelectComponents\\": "src/"
     }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "SelectComponents\\SelectComponentsServiceProvider"
+      ]
+    }
+  }
 }
