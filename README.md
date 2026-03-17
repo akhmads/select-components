@@ -12,6 +12,12 @@ This package is built using:
 - Tailwind CSS
 - daisyUI
 
+## Requirements
+
+- **Laravel 12+**
+- **Livewire** (includes Alpine.js)
+- **daisyUI** (Tailwind CSS plugin) or **Mary UI**
+
 ## Features
 
 - Responsive design
@@ -27,38 +33,34 @@ This package is built using:
 ## Included components
 
 - **`<x-remote-select />`**
-    - Fetches options via AJAX (remote endpoint)
-    - Supports searching/filtering as you type
-    - Keeps label/value in sync when `wire:model` changes
+  - Fetches options via AJAX (remote endpoint)
+  - Supports searching/filtering as you type
+  - Keeps label/value in sync when `wire:model` changes
 
 - **`<x-offline-select />`**
-    - Uses a local `options` array (static data)
-    - Supports searching locally
+  - Uses a local `options` array (static data)
+  - Supports searching locally
 
 - **`<x-multi-select />`**
-    - Supports selecting multiple values
-    - Uses the same remote (AJAX) mechanism as `remote-select`
+  - Supports selecting multiple values
+  - Uses the same remote (AJAX) mechanism as `remote-select`
 
-## Installation (local development)
+## Installation
 
-This repository is meant to be used as a local package. In the root Laravel project `composer.json`, add a path repository (this is already configured in this workspace):
+### Install livewire
 
-```json
-"repositories": [
-  {
-    "type": "path",
-    "url": "packages/select-components",
-    "options": {
-      "symlink": true
-    }
-  }
-]
-```
+- Install: `composer require livewire/livewire`
+- Docs: https://livewire.laravel.com/docs/4.x/installation
 
-Then install via Composer:
+### Install **daisyUI** (Tailwind CSS plugin) or **Mary UI**
+
+- Docs: https://daisyui.com/docs/install/laravel/
+- Docs: https://mary-ui.com/docs/installation
+
+### Install via Composer (Packagist)
 
 ```bash
-composer require select/select-components:*@dev
+composer require akhmads/select-components
 ```
 
 ## Usage
@@ -73,14 +75,39 @@ composer require select/select-components:*@dev
     option_label="label"
     placeholder="Select a user"
     clearable
+    :initial_value="\App\Models\User::find($selected)"
 />
 ```
 
-- `remote`: URL endpoint that returns JSON array of options.
-- `option_value` / `option_label`: which keys to use for value/label.
+- `remote`: URL endpoint that returns a JSON array of option objects (e.g. `/api/users` or `{{ route('api.user') }}`).
+- `option_value`: the key to use for the option value (default: `id`).
+- `option_label`: the key to use for the option label (default: `name`).
+- `placeholder`: placeholder text shown when nothing is selected.
+- `clearable`: when present, allows clearing the selection.
 - `initial_value`: (optional) can be either:
-    - an array of IDs (will fetch labels from remote)
-    - an array of objects `{id, label}` (will be used directly)
+  - an array of IDs (will fetch labels from remote)
+  - an array of objects `{id, name}` (will be used directly)
+
+Add a simple endpoint to `routes/web.php` (or `routes/api.php`) that returns users in JSON:
+
+```php
+use Illuminate\Http\Request;
+
+Route::get('/api/users', function (Request $request) {
+     $search = $request->query('search');
+
+     $users = \App\Models\User::query()
+         ->when($search, function ($q) use ($search) {
+             $q->where('name', 'like', "%{$search}%")
+                 ->orWhere('email', 'like', "%{$search}%");
+         })
+         ->orderBy('name')
+         ->limit(20)
+         ->get();
+
+     return $users;
+})->name('api.users');
+```
 
 ### Offline select
 
@@ -92,6 +119,7 @@ composer require select/select-components:*@dev
     option_label="name"
     placeholder="Select a user"
     clearable
+    :initial_value="['id' => 2, 'name' => 'Bar']"
 />
 ```
 
@@ -105,6 +133,7 @@ composer require select/select-components:*@dev
     option_label="label"
     placeholder="Select users"
     clearable
+    :initial_value="\App\Models\User::whereIn([1,2])->get()"
 />
 ```
 
@@ -120,3 +149,43 @@ php artisan vendor:publish --tag=views --provider="SelectComponents\SelectCompon
 
 - The components are registered automatically via package discovery.
 - `remote-select` and `multi-select` rely on a JSON endpoint returning an array of objects. Each object should have an `id` (or your chosen key) and a label key.
+
+### Contributing
+
+To work on this package locally, clone the repo into a `packages` folder inside your Laravel project.
+
+From your Laravel project root:
+
+```bash
+mkdir -p packages
+cd packages
+git clone https://github.com/akhmads/select-components.git
+```
+
+Then configure Composer to load it as a local package by adding a path repository to your `composer.json` (this is already configured in this workspace):
+
+```json
+"repositories": [
+  {
+    "type": "path",
+    "url": "packages/select-components",
+    "options": {
+      "symlink": true
+    }
+  }
+]
+```
+
+Finally, require the local package in your app:
+
+```bash
+composer require akhmads/select-components:*@dev --prefer-source
+```
+
+Once installed, you can make changes in `packages/select-components` and test them directly in your Laravel app.
+
+---
+
+## License
+
+This package is released under the MIT License. See the official license text at https://opensource.org/licenses/MIT.

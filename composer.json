@@ -9,9 +9,10 @@
       "homepage": "https://github.com/akhmads"
     }
   ],
-  "homepage": "https://akhmad.dev",
+  "homepage": "https://github.com/akhmads/select-components",
   "keywords": [
     "laravel",
+    "tailwindcss",
     "livewire",
     "components",
     "select",

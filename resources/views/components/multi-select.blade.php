@@ -204,8 +204,8 @@
     >
         <div class="flex flex-wrap gap-1 flex-1 min-w-0 max-w-full">
             <template x-for="(item, index) in selected" :key="item[optionValue]">
-                <div class="badge badge-neutral badge-soft gap-1 text-base-content">
-                    <span x-text="item[optionLabel]"></span>
+                <div class="badge badge-neutral badge-soft gap-1 text-base-content overflow-hidden">
+                    <span class="truncate block min-w-0 max-w-full" x-text="item[optionLabel]"></span>
                     <button
                         type="button"
                         x-show="! $root.hasAttribute('disabled')"
@@ -248,7 +248,7 @@
         x-transition:leave="transition ease-in duration-75"
         x-transition:leave-start="transform opacity-100 scale-100"
         x-transition:leave-end="transform opacity-0 scale-95"
-        class="absolute z-50 w-full mt-1 bg-base-100 border border-base-300 rounded-box shadow-lg max-h-60 overflow-auto flex flex-col"
+        class="absolute z-50 w-full mt-1 bg-base-100 border border-base-300 rounded-box shadow-lg max-h-60 overflow-auto overflow-x-hidden flex flex-col"
         style="display: none;"
     >
         {{-- Search Input --}}
@@ -282,8 +282,8 @@
                         :class="{'bg-primary text-primary-content': index === highlightedIndex, 'bg-base-200': isSelected(option)}"
                         class="text-sm rounded-none flex justify-between"
                     >
-                        <span x-text="option[optionLabel]" class="truncate block"></span>
-                        <span x-show="isSelected(option)" class="text-xs">
+                        <span x-text="option[optionLabel]" class="truncate block flex-1 min-w-0 max-w-full"></span>
+                        <span x-show="isSelected(option)" class="text-xs text-primary-content shrink-0">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
                         </span>
                     </a>
